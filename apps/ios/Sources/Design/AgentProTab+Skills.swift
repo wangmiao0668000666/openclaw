@@ -506,7 +506,7 @@ extension AgentProTab {
 
     func skillEditorSwitchIndicator(isOn: Bool) -> some View {
         Capsule()
-            .fill(isOn ? Color.accentColor : Color.secondary.opacity(0.35))
+            .fill(isOn ? OpenClawBrand.accent : Color.secondary.opacity(0.35))
             .frame(width: 52, height: 32)
             .overlay(alignment: isOn ? .trailing : .leading) {
                 Circle()
@@ -621,7 +621,10 @@ extension AgentProTab {
             }
 
             let raw = try Self.agentSkillsPatchRaw(agentId: self.activeAgentID, skills: skills)
-            let params = ConfigPatchParams(raw: raw, baseHash: baseHash)
+            let params = ConfigPatchParams(
+                raw: raw,
+                baseHash: baseHash,
+                replacePaths: ["agents.list[].skills"])
             let data = try JSONEncoder().encode(params)
             guard let json = String(data: data, encoding: .utf8) else {
                 throw SkillMutationError.invalidPatchPayload

@@ -2,6 +2,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { RequestedModelUnsupportedError } from "acpx/runtime";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   AcpRuntimeError,
@@ -222,6 +223,56 @@ describe("AcpxRuntime fresh reset wrapper", () => {
       model: "gpt-5.4",
       sessionOptions: { model: "gpt-5.4" },
     });
+  });
+
+  it("strips the OpenClaw Anthropic provider prefix for Claude ACP startup", async () => {
+    const baseStore: TestSessionStore = {
+      load: vi.fn(async () => undefined),
+      save: vi.fn(async () => {}),
+    };
+    const { runtime, delegate } = makeRuntime(baseStore, {
+      agentRegistry: {
+        resolve: (agentName: string) =>
+          agentName === "claude" ? "npx @agentclientprotocol/claude-agent-acp" : agentName,
+        list: () => ["claude", "openclaw"],
+      },
+    });
+    const ensure = vi.spyOn(delegate, "ensureSession").mockResolvedValue({
+      sessionKey: "agent:claude:acp:test",
+      backend: "acpx",
+      runtimeSessionName: "claude",
+    });
+
+    await runtime.ensureSession({
+      sessionKey: "agent:claude:acp:test",
+      agent: "claude",
+      mode: "persistent",
+      model: "anthropic/claude-sonnet-4-6",
+    });
+
+    expect(readFirstEnsureSessionInput(ensure)).toEqual({
+      sessionKey: "agent:claude:acp:test",
+      agent: "claude",
+      mode: "persistent",
+      model: "claude-sonnet-4-6",
+      sessionOptions: { model: "claude-sonnet-4-6" },
+    });
+  });
+
+  it("keeps Claude ACP model ids intact after stripping the OpenClaw provider prefix", () => {
+    expect(testing.normalizeClaudeAcpModelOverride("anthropic/claude-sonnet-4-6")).toBe(
+      "claude-sonnet-4-6",
+    );
+    expect(testing.normalizeClaudeAcpModelOverride("anthropic/claude-opus-4-8")).toBe(
+      "claude-opus-4-8",
+    );
+    expect(testing.normalizeClaudeAcpModelOverride("anthropic/claude-haiku-4-5")).toBe(
+      "claude-haiku-4-5",
+    );
+    expect(testing.normalizeClaudeAcpModelOverride("anthropic/claude-sonnet-4-6-1m")).toBe(
+      "claude-sonnet-4-6-1m",
+    );
+    expect(testing.normalizeClaudeAcpModelOverride("custom-model")).toBe("custom-model");
   });
 
   it("leaves Codex ACP startup defaults alone when no model or thinking is provided", async () => {
@@ -658,6 +709,100 @@ describe("AcpxRuntime fresh reset wrapper", () => {
     });
   });
 
+  it("retries without a model when ACPX reports missing model capability", async () => {
+    const baseStore: TestSessionStore = {
+      load: vi.fn(async () => undefined),
+      save: vi.fn(async () => {}),
+    };
+    const { runtime, delegate } = makeRuntime(baseStore, {
+      agentRegistry: {
+        resolve: (agentName: string) => (agentName === "opencode" ? "opencode acp" : agentName),
+        list: () => ["opencode"],
+      },
+    });
+    const ensure = vi
+      .spyOn(delegate, "ensureSession")
+      .mockRejectedValueOnce(
+        new RequestedModelUnsupportedError(
+          "Cannot apply --model: the ACP agent did not advertise model support",
+          "missing-capability",
+        ),
+      )
+      .mockResolvedValueOnce({
+        sessionKey: "agent:opencode:acp:test",
+        backend: "acpx",
+        runtimeSessionName: "opencode",
+      });
+
+    await runtime.ensureSession({
+      sessionKey: "agent:opencode:acp:test",
+      agent: "opencode",
+      mode: "persistent",
+      model: "openrouter/owl-alpha",
+    });
+
+    expect(ensure).toHaveBeenCalledTimes(2);
+    expect(readFirstEnsureSessionInput(ensure)).toMatchObject({
+      model: "openrouter/owl-alpha",
+      sessionOptions: { model: "openrouter/owl-alpha" },
+    });
+    const [, secondCall] = ensure.mock.calls;
+    expect(secondCall?.[0]).not.toHaveProperty("sessionOptions");
+    expect((secondCall?.[0] as { model?: string } | undefined)?.model).toBeUndefined();
+  });
+
+  it("does not retry when ACPX rejects an explicitly unsupported model id", async () => {
+    const baseStore: TestSessionStore = {
+      load: vi.fn(async () => undefined),
+      save: vi.fn(async () => {}),
+    };
+    const { runtime, delegate } = makeRuntime(baseStore, {
+      agentRegistry: {
+        resolve: (agentName: string) => (agentName === "opencode" ? "opencode acp" : agentName),
+        list: () => ["opencode"],
+      },
+    });
+    const ensure = vi
+      .spyOn(delegate, "ensureSession")
+      .mockRejectedValueOnce(
+        new RequestedModelUnsupportedError(
+          "Cannot apply --model: the ACP agent did not advertise that model",
+          "unadvertised-model",
+        ),
+      );
+
+    await expect(
+      runtime.ensureSession({
+        sessionKey: "agent:opencode:acp:test",
+        agent: "opencode",
+        mode: "persistent",
+        model: "unknown/model",
+      }),
+    ).rejects.toThrow("did not advertise that model");
+    expect(ensure).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not retry an unrelated error with similar wording", async () => {
+    const baseStore: TestSessionStore = {
+      load: vi.fn(async () => undefined),
+      save: vi.fn(async () => {}),
+    };
+    const { runtime, delegate } = makeRuntime(baseStore);
+    const ensure = vi
+      .spyOn(delegate, "ensureSession")
+      .mockRejectedValueOnce(new Error("the ACP agent did not advertise model support"));
+
+    await expect(
+      runtime.ensureSession({
+        sessionKey: "agent:main:acp:test",
+        agent: "main",
+        mode: "persistent",
+        model: "openrouter/owl-alpha",
+      }),
+    ).rejects.toThrow("did not advertise model support");
+    expect(ensure).toHaveBeenCalledTimes(1);
+  });
+
   it("injects Codex ACP startup config into the scoped registry", () => {
     expect(testing.isCodexAcpCommand(CODEX_ACP_COMMAND)).toBe(true);
     expect(testing.isCodexAcpCommand(CODEX_ACP_WRAPPER_COMMAND)).toBe(true);
@@ -898,7 +1043,7 @@ describe("AcpxRuntime fresh reset wrapper", () => {
     expect(setConfigOption).not.toHaveBeenCalled();
   });
 
-  it("still forwards non-timeout config controls for claude-agent-acp", async () => {
+  it("normalizes model config controls for claude-agent-acp", async () => {
     const baseStore: TestSessionStore = {
       load: vi.fn(async () => ({
         acpxRecordId: "agent:claude:acp:test",
@@ -918,14 +1063,14 @@ describe("AcpxRuntime fresh reset wrapper", () => {
     await runtime.setConfigOption({
       handle,
       key: "model",
-      value: "claude-sonnet-4.6",
+      value: "anthropic/claude-sonnet-4-6",
     });
 
     expect(setConfigOption).toHaveBeenCalledOnce();
     expect(setConfigOption).toHaveBeenCalledWith({
       handle,
       key: "model",
-      value: "claude-sonnet-4.6",
+      value: "claude-sonnet-4-6",
     });
   });
 
