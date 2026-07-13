@@ -843,7 +843,9 @@ async function fetchGroupsByIds(api: API, ids: string[]): Promise<Map<string, Gr
     if (chunk.length === 0) {
       continue;
     }
-    const response = await api.getGroupInfo(chunk);
+    const response = await withTimeout(api.getGroupInfo(chunk), 12_000, {
+      message: "Timed out fetching Zalo group info",
+    });
     const map = response.gridInfoMap ?? {};
     for (const [groupId, info] of Object.entries(map)) {
       result.set(groupId, info);
@@ -1065,7 +1067,9 @@ export async function listZaloFriends(
   return await withZaloApi(
     profile,
     async (api) => {
-      const friends = await api.getAllFriends();
+      const friends = await withTimeout(api.getAllFriends(), 12_000, {
+        message: "Timed out fetching Zalo friend list",
+      });
       return friends.map(mapFriend);
     },
     { credentialPersistence: options?.credentialPersistence ?? "persist" },
@@ -1102,7 +1106,9 @@ export async function listZaloGroups(
   return await withZaloApi(
     profile,
     async (api) => {
-      const allGroups = await api.getAllGroups();
+      const allGroups = await withTimeout(api.getAllGroups(), 12_000, {
+        message: "Timed out fetching Zalo group list",
+      });
       const ids = Object.keys(allGroups.gridVerMap ?? {});
       if (ids.length === 0) {
         return [];
@@ -1145,7 +1151,9 @@ export async function listZaloGroupMembers(
 ): Promise<ZaloGroupMember[]> {
   const profile = normalizeProfile(profileInput);
   return await withZaloApi(profile, async (api) => {
-    const infoResponse = await api.getGroupInfo(groupId);
+    const infoResponse = await withTimeout(api.getGroupInfo(groupId), 12_000, {
+      message: "Timed out fetching Zalo group info",
+    });
     const groupInfo = infoResponse.gridInfoMap?.[groupId] as
       | (GroupInfo & { memVerList?: unknown })
       | undefined;
@@ -1180,7 +1188,9 @@ export async function listZaloGroupMembers(
 
     const profileMap = new Map<string, { displayName?: string; avatar?: string }>();
     if (uniqueIds.length > 0) {
-      const profiles = await api.getGroupMembersInfo(uniqueIds);
+      const profiles = await withTimeout(api.getGroupMembersInfo(uniqueIds), 12_000, {
+        message: "Timed out fetching Zalo group members",
+      });
       const profileEntries = profiles.profiles as Record<
         string,
         {
@@ -1288,25 +1298,33 @@ export async function sendZaloTextMessage(
             }
 
             const attachmentFileName = fileName.includes(".") ? fileName : `${fileName}.bin`;
-            const uploaded = await api.uploadAttachment(
-              [
-                {
-                  data: media.buffer,
-                  filename: attachmentFileName as `${string}.${string}`,
-                  metadata: {
-                    totalSize: media.buffer.length,
+            const uploaded = await withTimeout(
+              api.uploadAttachment(
+                [
+                  {
+                    data: media.buffer,
+                    filename: attachmentFileName as `${string}.${string}`,
+                    metadata: {
+                      totalSize: media.buffer.length,
+                    },
                   },
-                },
-              ],
-              trimmedThreadId,
-              type,
+                ],
+                trimmedThreadId,
+                type,
+              ),
+              12_000,
+              { message: "Timed out uploading Zalo voice attachment" },
             );
             const voiceAsset = resolveUploadedVoiceAsset(uploaded);
             if (!voiceAsset) {
               throw new Error("Failed to resolve uploaded audio URL for voice message");
             }
             const voiceUrl = buildZaloVoicePlaybackUrl(voiceAsset);
-            const response = await api.sendVoice({ voiceUrl }, trimmedThreadId, type);
+            const response = await withTimeout(
+              api.sendVoice({ voiceUrl }, trimmedThreadId, type),
+              12_000,
+              { message: "Timed out sending Zalo voice message" },
+            );
             const voiceMessageId = extractSendMessageId(response);
             return {
               ok: true,
@@ -1398,7 +1416,9 @@ export async function sendZaloTypingEvent(
 
 async function resolveOwnUserId(api: API): Promise<string> {
   try {
-    const info = await api.fetchAccountInfo();
+    const info = await withTimeout(api.fetchAccountInfo(), 12_000, {
+      message: "Timed out fetching Zalo account info",
+    });
     const resolved = toNumberId(normalizeAccountInfoUser(info)?.userId);
     if (resolved) {
       return resolved;
