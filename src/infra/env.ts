@@ -41,21 +41,16 @@ function formatEnvValue(value: string, redact?: boolean): string {
   return `${truncateUtf16Safe(singleLine, 160)}…`;
 }
 
-/** Resets the module-level accepted-env log cache for tests. */
-export function resetLoggedEnvCacheForTest(): void {
-  loggedEnv.clear();
-}
-
 /** Logs an accepted env option once, with optional redaction for sensitive values. */
 export function logAcceptedEnvOption(option: AcceptedEnvOption): void {
   if (process.env.VITEST || process.env.NODE_ENV === "test") {
     return;
   }
-  if (loggedEnv.check(option.key)) {
-    return;
-  }
   const rawValue = option.value ?? process.env[option.key];
   if (!rawValue || !rawValue.trim()) {
+    return;
+  }
+  if (loggedEnv.check(option.key)) {
     return;
   }
   void getLog()
