@@ -11,6 +11,7 @@ import {
 } from "node:fs/promises";
 import { dirname } from "node:path";
 import { Container, Text } from "@earendil-works/pi-tui";
+import { isRecord } from "@openclaw/normalization-core/record-coerce";
 import { structuredPatch, formatPatch, FILE_HEADERS_ONLY } from "diff";
 import { Type } from "typebox";
 import { isMissingPathError } from "../../../infra/errors.js";
@@ -18,7 +19,7 @@ import { captureAgentToolSourceExecutionGuard } from "../../agent-tool-source-ex
 import { keyHint } from "../../modes/interactive/components/keybinding-hints.js";
 import { getLanguageFromPath, highlightCode } from "../../modes/interactive/theme/theme.js";
 import type { AgentTool } from "../../runtime/index.js";
-import { textResult } from "../../tools/common.js";
+import { textResult, ToolInputError } from "../../tools/common.js";
 import type { ToolDefinition, ToolRenderResultOptions } from "../extensions/types.js";
 import { generateDiffString, generateUnifiedPatch } from "./edit-diff.js";
 import {
@@ -513,6 +514,22 @@ async function recoverSuccessfulWrite(params: {
   return successfulWriteResult(params.path, params.content, params.details);
 }
 
+/**
+ * Rejects a parameter name the write schema does not declare.
+ *
+ * The tool schema tolerates undeclared keys, so they are accepted and then dropped: a caller
+ * asking to `append` had the file replaced with its fragment instead, and the tool still
+ * reported success. Mirrors `assertSupportedExecParams`, which already rejects the retired
+ * `timeout` on `exec` in favor of `timeoutSeconds`.
+ */
+function assertSupportedWriteParams(args: unknown): void {
+  if (isRecord(args) && Object.hasOwn(args, "append")) {
+    throw new ToolInputError(
+      'write parameter "append" is unsupported; write replaces the whole file — pass the complete content instead',
+    );
+  }
+}
+
 export function createWriteToolDefinition(
   cwd: string,
   options?: WriteToolOptions,
@@ -529,7 +546,7 @@ export function createWriteToolDefinition(
     outputSchema: WriteToolOutputSchema,
     async execute(
       toolCallId,
-      { path, content }: { path: string; content: string },
+      params: { path: string; content: string },
       signal?: AbortSignal,
       onUpdate?,
       ctx?,
@@ -537,6 +554,8 @@ export function createWriteToolDefinition(
       void toolCallId;
       void onUpdate;
       void ctx;
+      assertSupportedWriteParams(params);
+      const { path, content } = params;
       const assertCurrent = captureAgentToolSourceExecutionGuard();
       const absolutePath = resolvePath(path, cwd);
       const dir = dirname(absolutePath);

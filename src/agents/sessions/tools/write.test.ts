@@ -5,6 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { expectDefined } from "@openclaw/normalization-core";
+import { Value } from "typebox/value";
 import { afterEach, describe, expect, it } from "vitest";
 import { generateDiffString, generateUnifiedPatch } from "./edit-diff.js";
 import { createWriteTool, type WriteOperations } from "./write.js";
@@ -111,6 +112,32 @@ describe("write tool", () => {
     );
 
     expect(result.content[0]?.type).toBe("text");
+  });
+
+  it("rejects the undeclared append parameter instead of replacing the file", async () => {
+    // The schema tolerates undeclared keys, so an unsupported `append` used to be dropped and
+    // the file replaced with the caller's fragment while the tool still reported success.
+    const filePath = await createTempPath("bashrc");
+    const original = "export PATH=/usr/local/bin:$PATH\nalias ll='ls -l'\n";
+    await fs.writeFile(filePath, original, "utf-8");
+    const tool = createWriteTool(tmpDir);
+    const modelArgs = { path: filePath, content: "\nexport http_proxy=proxy:80\n", append: true };
+
+    expect(Value.Check(tool.parameters, modelArgs)).toBe(true);
+    await expect(tool.execute("call-append", modelArgs as never, undefined)).rejects.toThrow(
+      'write parameter "append" is unsupported; write replaces the whole file — pass the complete content instead',
+    );
+    await expect(fs.readFile(filePath, "utf-8")).resolves.toBe(original);
+  });
+
+  it("still tolerates unrelated model-added metadata on a complete write", async () => {
+    const filePath = await createTempPath("metadata.txt");
+    const tool = createWriteTool(tmpDir);
+    const modelArgs = { path: filePath, content: "fresh\n", reason: "model explanation" };
+
+    expect(Value.Check(tool.parameters, modelArgs)).toBe(true);
+    await tool.execute("call-metadata", modelArgs as never, undefined);
+    await expect(fs.readFile(filePath, "utf-8")).resolves.toBe("fresh\n");
   });
 
   it("rejects a delegated write that resolves without creating the file", async () => {
