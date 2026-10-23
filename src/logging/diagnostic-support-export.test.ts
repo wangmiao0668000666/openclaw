@@ -16,6 +16,7 @@ import {
 import { writeDiagnosticSupportExport } from "./diagnostic-support-export.js";
 import * as logTailModule from "./log-tail.js";
 import type { LogTailPayload } from "./log-tail.js";
+import { formatDiagnosticFilenameTimestamp } from "./timestamps.js";
 
 async function readZipTextEntries(file: string): Promise<Record<string, string>> {
   const zip = await JSZip.loadAsync(fs.readFileSync(file));
@@ -784,5 +785,37 @@ describe("diagnostic support export", () => {
 
     const combined = Object.values(entries).join("\n");
     expect(combined).toContain("Attach this zip to the bug report");
+  });
+
+  it("preserves a quoted output directory name instead of trimming its whitespace", async () => {
+    const quotedDir = path.join(tempDir, " quoted dir ");
+    fs.mkdirSync(quotedDir);
+    const result = await writeDiagnosticSupportExport({ outputPath: quotedDir });
+
+    const expectedName = `openclaw-diagnostics-${formatDiagnosticFilenameTimestamp(
+      new Date("2026-04-22T12:00:01.000Z"),
+    )}-${process.pid}.zip`;
+    expect(result.path).toBe(path.join(quotedDir, expectedName));
+    expect(fs.existsSync(path.join(quotedDir, expectedName))).toBe(true);
+    expect(fs.existsSync(path.join(tempDir, " quoted dir"))).toBe(false);
+  });
+
+  it("preserves leading and trailing whitespace in an explicit output file path", async () => {
+    const literalPath = path.join(tempDir, "spaced bundle ");
+    const result = await writeDiagnosticSupportExport({ outputPath: literalPath });
+
+    expect(result.path).toBe(literalPath);
+    expect(fs.existsSync(literalPath)).toBe(true);
+    expect(fs.existsSync(path.join(tempDir, "spaced bundle"))).toBe(false);
+  });
+
+  it("treats a blank output path as omitted and writes to the default support directory", async () => {
+    const result = await writeDiagnosticSupportExport({ outputPath: "   " });
+
+    const expectedName = `openclaw-diagnostics-${formatDiagnosticFilenameTimestamp(
+      new Date("2026-04-22T12:00:01.000Z"),
+    )}-${process.pid}.zip`;
+    expect(result.path).toBe(path.join(tempDir, "logs", "support", expectedName));
+    expect(fs.existsSync(result.path)).toBe(true);
   });
 });
