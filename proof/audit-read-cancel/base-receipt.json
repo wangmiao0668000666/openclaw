@@ -1,0 +1,32 @@
+{
+  "head": "d5d77e181a2eb67ba71852e51c68b5ab018a326f",
+  "expectation": "red",
+  "cases": [
+    {
+      "label": "audit-sigint",
+      "command": [
+        "/home/0668000666/.nvm/versions/node/v24.22.1/bin/node",
+        "--import",
+        "/media/vdc/OpenClaw/.artifacts/worktrees/fix-audit-read-cancel/scripts/tsx.mjs",
+        "/media/vdc/OpenClaw/.artifacts/worktrees/fix-audit-read-cancel/src/entry.ts",
+        "audit",
+        "--json"
+      ],
+      "exitCode": -9,
+      "seconds": 20820.4,
+      "interruptToExitMs": 2068.3,
+      "interruptSent": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "quiet": false,
+      "heldAuditRequest": true,
+      "stdoutAfterInterrupt": "^C",
+      "stderrTail": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
+      "stdoutSHA256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17",
+      "result": "GREEN_READ_ABORT"
+    }
+  ],
+  "result": "GREEN_READ_ABORT",
+  "peerPort": 43255,
+  "peerPid": 3501156
+}
