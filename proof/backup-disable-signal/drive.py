@@ -3,6 +3,7 @@ from pathlib import Path
 def re_sub(text):
     return re.sub(r'\x1b\[[0-?]*[ -/]*[@-~]','',text)
 # usage: drive.py <checkout> <outdir> <node> <expectation> <entry>
+# entry: "src" -> node --import tsx src/entry.ts
 checkout=Path(sys.argv[1]).resolve(); out=Path(sys.argv[2]).resolve(); node=Path(sys.argv[3]).resolve(); expect=sys.argv[4]; entry=sys.argv[5]
 assert expect in ('red','green')
 out.mkdir(parents=True,exist_ok=True)
@@ -34,13 +35,20 @@ if pid==0:
     fcntl.ioctl(0,termios.TIOCSWINSZ,struct.pack('HHHH',24,100,0,0))
     fd=os.open(case/'stderr.log',os.O_WRONLY|os.O_CREAT|os.O_TRUNC,0o600);os.dup2(fd,2);os.close(fd)
     os.chdir(checkout);os.execve(str(node),command,cli_env)
-data=bytearray();sent=None;status=None;eof=False;watchdog=False;exited=None
+data=bytearray();sent=None;status=None;eof=False;watchdog=False;exited=None;released=None
 try:
     while time.monotonic()-started<40:
         held=any(e['event']=='remove-held' for e in events)
         if sent is None and held:
             sent=time.monotonic();stdout_at_interrupt=len(data)
             os.write(master,b'\x03')  # Ctrl+C = SIGINT
+        # After SIGINT, give the CLI's AsyncWorkScope close a beat (the removal
+        # loop breaks before starting offsite-job), then release the admitted
+        # git-job removal so its receipt settles while later removals stay
+        # unstarted. The admitted reply must settle to prove the receipt is kept.
+        if sent is not None and released is None and time.monotonic()-sent>0.8:
+            released=time.monotonic()
+            peer.stdin.write('{"op":"release"}\n');peer.stdin.flush()
         ready,_,_=select.select([master],[],[],.025)
         if ready:
             try:
@@ -63,6 +71,7 @@ finally:
 raw=bytes(data);err=(case/'stderr.log').read_bytes()
 (case/'stdout.raw').write_bytes(raw)
 remove_events=[e for e in events if e['event']=='remove-held']
+released_events=[e for e in events if e['event']=='remove-released']
 tail=raw[stdout_at_interrupt:] if sent else b''
 plain=re_sub(tail.decode(errors='replace'))
 errtail=err if sent else b''
@@ -70,16 +79,24 @@ row={'label':'backup-disable-sigint','command':command,'exitCode':os.waitstatus_
      'seconds':round((exited-started)*1000,1) if exited else None,
      'interruptToExitMs':round((exited-sent)*1000,1) if sent and exited else None,
      'interruptSent':sent is not None,'watchdog':watchdog,'ptyEof':eof,
-     'removeRequests':len(remove_events),
+     'removeRequests':len(remove_events),'removesReleased':len(released_events),
      'removesAtClose':max([e.get('removes',0) for e in events if e['event']=='front-closed'], default=0),
-     'stdoutAfterInterrupt':plain[:400],
+     'stdoutAfterInterrupt':plain[:600],
      'stderrTail':errtail.decode(errors='replace')[-300:],
      'stdoutSHA256':__import__('hashlib').sha256(raw).hexdigest()}
 receipt['cases'].append(row);save()
-# verdict: green -> exit 130 with prompt interrupt (read cancelled); red/base -> launcher kill
+# verdict: green -> the admitted git-job removal settles (receipt kept), the
+# loop breaks before offsite-job (only 1 remove request), and the CLI reports
+# the interruption instead of a false "Scheduled backups disabled."
+# base/old -> offsite-job is never removed, but the CLI still prints the
+# all-disabled acknowledgement (misleading success) OR the in-flight remove is
+# aborted and its receipt is dropped.
 if remove_events:
-    accepted=(row['exitCode']==130 and row['interruptToExitMs'] is not None and row['interruptToExitMs']<1500)
-    row['result']='GREEN_REMOVE_ABORT' if (accepted if expect=='green' else not accepted) else ('RED_REMOVE_PENDING' if expect=='green' else 'GREEN_EXISTING_BASE')
+    admitted_settled=len(released_events)>=1
+    interrupted_reported=('not reached (interrupted)' in plain)
+    no_late_mutations=row['removeRequests']==1
+    accepted=(admitted_settled and interrupted_reported and no_late_mutations)
+    row['result']='GREEN_RECEIPT_KEPT' if (accepted if expect=='green' else not accepted) else ('RED_ACK_MISLEADING' if expect=='green' else 'GREEN_EXISTING_BASE')
 else:
     row['result']='NO_HELD_REQUEST'
 receipt['result']=receipt['cases'][0]['result']

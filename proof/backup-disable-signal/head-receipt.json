@@ -1,34 +1,35 @@
 {
-  "head": "719fc7a307b3",
+  "head": "8a20a85bc47c5c2f4bbeefdf2759b58f36dcba9f",
   "expectation": "green",
   "cases": [
     {
       "label": "backup-disable-sigint",
       "command": [
-        "/home/0668000666/tools/node-v24.22.1-linux-x64/bin/node",
+        "/home/0668000666/.nvm/versions/node/v24.22.1/bin/node",
         "--import",
         "/media/vdc/OpenClaw/.artifacts/worktrees/fix-backup-disable-signal/scripts/tsx.mjs",
         "/media/vdc/OpenClaw/.artifacts/worktrees/fix-backup-disable-signal/src/entry.ts",
         "backup",
         "disable",
         "--port",
-        "33587"
+        "34297"
       ],
       "exitCode": 130,
-      "seconds": 23468.0,
-      "interruptToExitMs": 238.9,
+      "seconds": 26403.1,
+      "interruptToExitMs": 1025.8,
       "interruptSent": true,
       "watchdog": false,
       "ptyEof": true,
       "removeRequests": 1,
+      "removesReleased": 1,
       "removesAtClose": 1,
-      "stdoutAfterInterrupt": "^C",
-      "stderrTail": "esources: The service is no longer running\nCLI cleanup failed: mcp-loopback: The service is no longer running\nCLI cleanup failed: memory: The service is no longer running\n[openclaw] log file append failed; records dropped; check that the path is a writable regular file; file=openclaw-2026-11-13.log\n",
-      "stdoutSHA256": "37ad9992efc5cbc302eb527b8853d927506d50e96b195728aec2c8b15d3eec9f",
-      "result": "GREEN_REMOVE_ABORT"
+      "stdoutAfterInterrupt": "^CScheduled backups disabled before completion: 1 schedule(s) not reached (interrupted).\r\n",
+      "stderrTail": "esources: The service is no longer running\nCLI cleanup failed: mcp-loopback: The service is no longer running\nCLI cleanup failed: memory: The service is no longer running\n[openclaw] log file append failed; records dropped; check that the path is a writable regular file; file=openclaw-2026-11-14.log\n",
+      "stdoutSHA256": "58fbba31eec9da880101696a169e65208034f2d804fe2b24abaa4fca1258ef35",
+      "result": "GREEN_RECEIPT_KEPT"
     }
   ],
-  "result": "GREEN_REMOVE_ABORT",
-  "peerPort": 33587,
-  "peerPid": 262844
+  "result": "GREEN_RECEIPT_KEPT",
+  "peerPort": 34297,
+  "peerPid": 800987
 }

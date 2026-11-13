@@ -1,14 +1,17 @@
 // Synthetic loopback WebSocket gateway peer speaking the real OpenClaw wire
 // protocol. Completes the challenge/connect handshake, answers `cron.list`
 // (two backup schedules), then holds the first `cron.remove` (never replies)
-// so the CLI mutation read stays pending while SIGINT is delivered to the PTY.
-// The peer counts every remove it receives.
+// so the CLI mutation read stays pending. The driver sends {"op":"release"}
+// after SIGINT so the admitted removal's reply settles while later removals
+// stay unstarted. The peer counts every remove it receives and reports the
+// held request's id so the driver can prove exactly one removal was admitted.
 import { createRequire } from "node:module";
 import path from "node:path";
 import { createInterface } from "node:readline";
 const checkout = process.argv[2];
 const { WebSocketServer } = createRequire(path.join(checkout, "package.json"))("ws");
 let removes = 0;
+let held = null; // { ws, id } of the admitted removal awaiting its reply
 const record = (event, facts = {}) =>
   process.stdout.write(JSON.stringify({ event, wallMs: Date.now(), ...facts }) + "\n");
 const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
@@ -76,8 +79,9 @@ server.on("connection", (ws) => {
       record("cron-list-ok", { jobCount: jobs.length });
     } else if (f.type === "req" && f.method === "cron.remove") {
       removes += 1;
+      held = { ws, id: f.id, params: f.params };
       record("remove-held", { requestId: f.id, params: f.params, removes });
-      // Never reply: the CLI mutation read stays pending until SIGINT or launcher kill.
+      // Never reply yet: the admitted mutation stays in flight until release.
     } else {
       record("other-request", { method: f.method });
     }
@@ -91,6 +95,13 @@ lines.on("line", (line) => {
     process.stdout.write(
       JSON.stringify({ event: "port-reply", port: server.address().port }) + "\n",
     );
+  } else if (msg.op === "release") {
+    if (held) {
+      const { ws, id } = held;
+      ws.send(JSON.stringify({ type: "res", id, ok: true, payload: { removed: true } }));
+      record("remove-released", { requestId: id, removes });
+      held = null;
+    }
   } else if (msg.op === "stop") {
     server.close(() => process.exit(0));
     lines.close();
