@@ -30,7 +30,7 @@ pinned BASE (`d5d77e181a2e`) and HEAD (`378deb30e85a`) commits.
 | Revision                      | exitCode         | SIGINT→exit | Outcome                                                                                                                                                             |
 | ----------------------------- | ---------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | BASE `d5d77e181a2e` (unfixed) | **-9 (SIGKILL)** | **2068 ms** | Read is NOT cancelled. The process hangs in the pending `audit.activity.list` read after Ctrl+C and is killed by the harness timeout instead of exiting on its own. |
-| HEAD `378deb30e85a` (fixed)   | **130 (SIGINT)** | **238 ms**  | Read is cancelled. The CLI exits normally with the SIGINT code ~9× faster; no late audit output is printed.                                                         |
+| HEAD `f02c79ff0a79` (fixed)   | **130 (SIGINT)** | **185 ms**  | Read is cancelled. The CLI exits normally with the SIGINT code ~11× faster; no late audit output is printed.                                                        |
 
 BASE stderr: `Command interrupted by SIGINT. Waiting for cleanup before exiting.` then
 the process is SIGKILLed (2068 ms) — it never reaches the interrupted-notice exit path.

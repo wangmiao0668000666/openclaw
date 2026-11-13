@@ -1,5 +1,5 @@
 {
-  "head": "378deb30e85a30e6457c8c205c0c6a6e2977d65a",
+  "head": "f02c79ff0a79e330a721033a335e5b572bea1e32",
   "expectation": "green",
   "cases": [
     {
@@ -13,8 +13,8 @@
         "--json"
       ],
       "exitCode": 130,
-      "seconds": 20539.2,
-      "interruptToExitMs": 237.9,
+      "seconds": 19439.0,
+      "interruptToExitMs": 185.1,
       "interruptSent": true,
       "watchdog": false,
       "ptyEof": true,
@@ -27,6 +27,6 @@
     }
   ],
   "result": "RED_READ_PENDING",
-  "peerPort": 43607,
-  "peerPid": 3505237
+  "peerPort": 39027,
+  "peerPid": 3619848
 }
