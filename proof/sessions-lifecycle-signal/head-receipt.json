@@ -1,0 +1,37 @@
+{
+  "head": "6c1236466b8ee085432dd8973cd3b86120f9579f",
+  "expectation": "green",
+  "cases": [
+    {
+      "label": "sessions-delete-sigint",
+      "command": [
+        "/home/0668000666/tools/node-v24.22.1-linux-x64/bin/node",
+        "--import",
+        "/media/vdc/OpenClaw/.artifacts/worktrees/fix-sessions-lifecycle-signal/scripts/tsx.mjs",
+        "/media/vdc/OpenClaw/.artifacts/worktrees/fix-sessions-lifecycle-signal/src/entry.ts",
+        "sessions",
+        "delete",
+        "agent:main:s1",
+        "agent:main:s2",
+        "agent:main:s3",
+        "--yes",
+        "--json"
+      ],
+      "exitCode": 130,
+      "seconds": 33273.0,
+      "interruptToExitMs": 317.3,
+      "interruptSent": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "deleteRequests": 1,
+      "deletesAtClose": 1,
+      "stdoutAfterInterrupt": "^C{\r\n  \"ok\": false,\r\n  \"error\": {\r\n    \"type\": \"cli_error\",\r\n    \"message\": \"Session delete did not complete for every requested key.\"\r\n  },\r\n  \"operation\": \"delete\",\r\n  \"dryRun\": false,\r\n  \"results\": [\r\n    {\r\n      \"key\": \"agent:main:s1\",\r\n      \"ok\": false,\r\n      \"status\": \"failed\",\r\n      \"error\": \"gateway request aborted for sessions.delete\"\r\n    }\r\n  ]\r\n}\r\n",
+      "stderrTail": "esources: The service is no longer running\nCLI cleanup failed: mcp-loopback: The service is no longer running\nCLI cleanup failed: memory: The service is no longer running\n[openclaw] log file append failed; records dropped; check that the path is a writable regular file; file=openclaw-2026-11-13.log\n",
+      "stdoutSHA256": "769d94c1416148f88577b4dfb6162bd5ee28d7e05c33cc94fed007947c704d2e",
+      "result": "GREEN_DELETE_ABORT"
+    }
+  ],
+  "result": "GREEN_DELETE_ABORT",
+  "peerPort": 39053,
+  "peerPid": 4041171
+}

@@ -1,0 +1,37 @@
+{
+  "head": "5bdadab2c7394a83ff4b7ad0744a2c3d6f198aea",
+  "expectation": "red",
+  "cases": [
+    {
+      "label": "sessions-delete-sigint",
+      "command": [
+        "/home/0668000666/tools/node-v24.22.1-linux-x64/bin/node",
+        "--import",
+        "/media/vdc/OpenClaw/.artifacts/worktrees/fix-sessions-lifecycle-signal/scripts/tsx.mjs",
+        "/media/vdc/OpenClaw/.artifacts/worktrees/fix-sessions-lifecycle-signal/src/entry.ts",
+        "sessions",
+        "delete",
+        "agent:main:s1",
+        "agent:main:s2",
+        "agent:main:s3",
+        "--yes",
+        "--json"
+      ],
+      "exitCode": -9,
+      "seconds": 34597.0,
+      "interruptToExitMs": 2093.8,
+      "interruptSent": true,
+      "watchdog": false,
+      "ptyEof": true,
+      "deleteRequests": 1,
+      "deletesAtClose": 1,
+      "stdoutAfterInterrupt": "^C",
+      "stderrTail": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
+      "stdoutSHA256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17",
+      "result": "GREEN_DELETE_ABORT"
+    }
+  ],
+  "result": "GREEN_DELETE_ABORT",
+  "peerPort": 36273,
+  "peerPid": 4058144
+}
