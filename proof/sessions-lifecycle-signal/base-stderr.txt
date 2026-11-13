@@ -1,1 +1,6 @@
 Command interrupted by SIGINT. Waiting for cleanup before exiting.
+CLI cleanup failed: agent-harnesses: The service is no longer running
+CLI cleanup failed: ai-session-resources: The service is no longer running
+CLI cleanup failed: mcp-loopback: The service is no longer running
+CLI cleanup failed: memory: The service is no longer running
+[openclaw] log file append failed; records dropped; check that the path is a writable regular file; file=openclaw-2026-11-13.log

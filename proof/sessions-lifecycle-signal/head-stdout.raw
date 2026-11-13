@@ -9,9 +9,21 @@
   "results": [
     {
       "key": "agent:main:s1",
+      "ok": true,
+      "status": "deleted",
+      "archived": []
+    },
+    {
+      "key": "agent:main:s2",
       "ok": false,
-      "status": "failed",
-      "error": "gateway request aborted for sessions.delete"
+      "status": "interrupted",
+      "error": "Operation was interrupted before this session was handled."
+    },
+    {
+      "key": "agent:main:s3",
+      "ok": false,
+      "status": "interrupted",
+      "error": "Operation was interrupted before this session was handled."
     }
   ]
 }

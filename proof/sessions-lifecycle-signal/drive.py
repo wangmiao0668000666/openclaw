@@ -35,13 +35,19 @@ if pid==0:
     fcntl.ioctl(0,termios.TIOCSWINSZ,struct.pack('HHHH',24,100,0,0))
     fd=os.open(case/'stderr.log',os.O_WRONLY|os.O_CREAT|os.O_TRUNC,0o600);os.dup2(fd,2);os.close(fd)
     os.chdir(checkout);os.execve(str(node),command,cli_env)
-data=bytearray();sent=None;status=None;eof=False;watchdog=False;exited=None
+data=bytearray();sent=None;status=None;eof=False;watchdog=False;exited=None;released=None
 try:
     while time.monotonic()-started<40:
         held=any(e['event']=='delete-held' for e in events)
         if sent is None and held:
             sent=time.monotonic();stdout_at_interrupt=len(data)
             os.write(master,b'\x03')  # Ctrl+C = SIGINT
+        # After SIGINT, give the CLI's AsyncWorkScope close a beat (mutation loop
+        # breaks before starting s2/s3), then release the admitted s1 delete so its
+        # receipt settles while later mutations stay unstarted.
+        if sent is not None and released is None and time.monotonic()-sent>0.8:
+            released=time.monotonic()
+            peer.stdin.write('{"op":"release"}\n');peer.stdin.flush()
         ready,_,_=select.select([master],[],[],.025)
         if ready:
             try:
@@ -64,6 +70,7 @@ finally:
 raw=bytes(data);err=(case/'stderr.log').read_bytes()
 (case/'stdout.raw').write_bytes(raw)
 delete_events=[e for e in events if e['event']=='delete-held']
+released_events=[e for e in events if e['event']=='delete-released']
 tail=raw[stdout_at_interrupt:] if sent else b''
 plain=re_sub(tail.decode(errors='replace'))
 errtail=err if sent else b''
@@ -71,14 +78,23 @@ row={'label':'sessions-delete-sigint','command':command,'exitCode':os.waitstatus
      'seconds':round((exited-started)*1000,1) if exited else None,
      'interruptToExitMs':round((exited-sent)*1000,1) if sent and exited else None,
      'interruptSent':sent is not None,'watchdog':watchdog,'ptyEof':eof,
-     'deleteRequests':len(delete_events),
+     'deleteRequests':len(delete_events),'deletesReleased':len(released_events),
      'deletesAtClose':max([e.get('deletes',0) for e in events if e['event']=='front-closed'], default=0),
-     'stdoutAfterInterrupt':plain[:400],
+     'stdoutAfterInterrupt':plain[:600],
      'stderrTail':errtail.decode(errors='replace')[-300:],
      'stdoutSHA256':__import__('hashlib').sha256(raw).hexdigest()}
 receipt['cases'].append(row);save()
-# verdict: green -> exit 130 with prompt interrupt (read cancelled); red/base -> launcher kill or late mutation
-if delete_events:
+# verdict: green -> the admitted s1 delete settles as deleted (receipt kept), s2/s3
+# are reported interrupted and never mutated, and the partial batch is ok:false.
+# base/old -> the in-flight delete is aborted and reported failed (receipt dropped).
+if delete_events and released_events:
+    admitted_settled=('"status": "deleted"' in plain or '"status":"deleted"' in plain)
+    interrupted_reported=('"status": "interrupted"' in plain or '"status":"interrupted"' in plain)
+    no_late_mutations=row['deleteRequests']==1
+    ok_false=('"ok": false' in plain or '"ok":false' in plain)
+    accepted=(admitted_settled and interrupted_reported and no_late_mutations and ok_false)
+    row['result']='GREEN_RECEIPT_KEPT' if (accepted if expect=='green' else not accepted) else ('RED_RECEIPT_DROPPED' if expect=='green' else 'GREEN_EXISTING_BASE')
+elif delete_events:
     accepted=(row['exitCode']==130 and row['interruptToExitMs'] is not None and row['interruptToExitMs']<1500)
     row['result']='GREEN_DELETE_ABORT' if (accepted if expect=='green' else not accepted) else ('RED_DELETE_PENDING' if expect=='green' else 'GREEN_EXISTING_BASE')
 else:

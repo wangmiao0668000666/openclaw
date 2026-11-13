@@ -1,5 +1,5 @@
 {
-  "head": "5bdadab2c7394a83ff4b7ad0744a2c3d6f198aea",
+  "head": "c18593cb904d",
   "expectation": "red",
   "cases": [
     {
@@ -17,21 +17,22 @@
         "--yes",
         "--json"
       ],
-      "exitCode": -9,
-      "seconds": 34597.0,
-      "interruptToExitMs": 2093.8,
+      "exitCode": 130,
+      "seconds": 37382.9,
+      "interruptToExitMs": 410.7,
       "interruptSent": true,
       "watchdog": false,
       "ptyEof": true,
       "deleteRequests": 1,
+      "deletesReleased": 0,
       "deletesAtClose": 1,
-      "stdoutAfterInterrupt": "^C",
-      "stderrTail": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
-      "stdoutSHA256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17",
-      "result": "GREEN_DELETE_ABORT"
+      "stdoutAfterInterrupt": "^C{\r\n  \"ok\": false,\r\n  \"error\": {\r\n    \"type\": \"cli_error\",\r\n    \"message\": \"Session delete did not complete for every requested key.\"\r\n  },\r\n  \"operation\": \"delete\",\r\n  \"dryRun\": false,\r\n  \"results\": [\r\n    {\r\n      \"key\": \"agent:main:s1\",\r\n      \"ok\": false,\r\n      \"status\": \"failed\",\r\n      \"error\": \"gateway request aborted for sessions.delete\"\r\n    }\r\n  ]\r\n}\r\n",
+      "stderrTail": "esources: The service is no longer running\nCLI cleanup failed: mcp-loopback: The service is no longer running\nCLI cleanup failed: memory: The service is no longer running\n[openclaw] log file append failed; records dropped; check that the path is a writable regular file; file=openclaw-2026-11-13.log\n",
+      "stdoutSHA256": "769d94c1416148f88577b4dfb6162bd5ee28d7e05c33cc94fed007947c704d2e",
+      "result": "GREEN_EXISTING_BASE"
     }
   ],
-  "result": "GREEN_DELETE_ABORT",
-  "peerPort": 36273,
-  "peerPid": 4058144
+  "result": "GREEN_EXISTING_BASE",
+  "peerPort": 37509,
+  "peerPid": 384340
 }

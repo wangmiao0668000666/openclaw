@@ -1,1 +1,17 @@
-^C
+^C{
+  "ok": false,
+  "error": {
+    "type": "cli_error",
+    "message": "Session delete did not complete for every requested key."
+  },
+  "operation": "delete",
+  "dryRun": false,
+  "results": [
+    {
+      "key": "agent:main:s1",
+      "ok": false,
+      "status": "failed",
+      "error": "gateway request aborted for sessions.delete"
+    }
+  ]
+}
