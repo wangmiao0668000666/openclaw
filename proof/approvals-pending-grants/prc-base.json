@@ -1,0 +1,101 @@
+{
+  "harness": "ws-peer-harness/drive.mjs",
+  "startedAt": "2026-11-14T10:33:23.022Z",
+  "tree": "/ws",
+  "method": "exec.approval.grants.list",
+  "cliArgs": [
+    "approvals",
+    "grants",
+    "list",
+    "--url",
+    "ws://127.0.0.1:18828",
+    "--token",
+    "test-token",
+    "--timeout",
+    "14000",
+    "--json"
+  ],
+  "isolatedEnv": {
+    "OPENCLAW_STATE_DIR": "/tmp/wspeer-reLFs4/state",
+    "OPENCLAW_CONFIG_PATH": "/tmp/wspeer-reLFs4/config/openclaw.json",
+    "OPENCLAW_HOME": "/tmp/wspeer-reLFs4/home",
+    "HOME": "/tmp/wspeer-reLFs4/home"
+  },
+  "stdout": "{\"grants\":[{\"grantId\":\"l8e_grant_7f3a91\",\"mintedByApprovalId\":\"l8e_mint_7f3a91\",\"agentId\":\"main\",\"cronJobId\":\"cron-7f3a91\",\"cronJobName\":\"L8E_MARKER_7f3a91\",\"command\":\"echo late-grant\",\"cwd\":null,\"createdAtMs\":1732000000000,\"expiresAtMs\":null,\"revokedAtMs\":null,\"revokedBy\":null,\"lastUsedAtMs\":null,\"useCount\":0}]}\n",
+  "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
+  "exitCode": 130,
+  "exitSignal": null,
+  "sigintToExitMs": 859,
+  "lateResponseSent": true,
+  "lateResponsePrinted": true,
+  "watchdog": false,
+  "earlyExitBeforeSigint": false,
+  "targetRequestSeen": true,
+  "targetRequestMethod": "exec.approval.grants.list",
+  "connectFrame": {
+    "event": "connect",
+    "id": "1:ac051ac6-3a57-4b68-880b-12364a1e7da1",
+    "minProtocol": 4,
+    "maxProtocol": 4,
+    "client": {
+      "id": "cli",
+      "version": "2026.11.3",
+      "platform": "linux",
+      "deviceFamily": "Linux",
+      "mode": "cli",
+      "instanceId": "55f98696-2197-475e-bb25-fed463bbf475"
+    },
+    "role": "operator",
+    "scopes": [
+      "operator.approvals"
+    ],
+    "hasAuthToken": true
+  },
+  "peerEvents": [
+    {
+      "event": "listening",
+      "port": 18828
+    },
+    {
+      "event": "connect",
+      "id": "1:ac051ac6-3a57-4b68-880b-12364a1e7da1",
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "55f98696-2197-475e-bb25-fed463bbf475"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.approvals"
+      ],
+      "hasAuthToken": true
+    },
+    {
+      "event": "req",
+      "method": "exec.approval.grants.list",
+      "id": "2:bd8fd6d0-5c89-4eb6-8af4-c636eeb593e1",
+      "params": {}
+    },
+    {
+      "event": "held",
+      "method": "exec.approval.grants.list",
+      "id": "2:bd8fd6d0-5c89-4eb6-8af4-c636eeb593e1"
+    },
+    {
+      "event": "released",
+      "method": "exec.approval.grants.list",
+      "id": "2:bd8fd6d0-5c89-4eb6-8af4-c636eeb593e1",
+      "socketOpen": true
+    }
+  ],
+  "lateResponseSentAt": "2026-11-14T10:33:52.442Z",
+  "stderrTail": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
+  "peerStderr": "",
+  "finishedAt": "2026-11-14T10:33:53.000Z",
+  "peerPort": 18828
+}

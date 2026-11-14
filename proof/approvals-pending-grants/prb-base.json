@@ -1,0 +1,160 @@
+{
+  "harness": "ws-peer-harness/drive.mjs",
+  "startedAt": "2026-11-14T10:32:49.407Z",
+  "tree": "/ws",
+  "method": "exec.approval.list",
+  "cliArgs": [
+    "approvals",
+    "pending",
+    "--url",
+    "ws://127.0.0.1:18826",
+    "--token",
+    "test-token",
+    "--timeout",
+    "14000",
+    "--json"
+  ],
+  "isolatedEnv": {
+    "OPENCLAW_STATE_DIR": "/tmp/wspeer-GpLHV0/state",
+    "OPENCLAW_CONFIG_PATH": "/tmp/wspeer-GpLHV0/config/openclaw.json",
+    "OPENCLAW_HOME": "/tmp/wspeer-GpLHV0/home",
+    "HOME": "/tmp/wspeer-GpLHV0/home"
+  },
+  "stdout": "{\"approvals\":[{\"id\":\"l8e_pending_id_7f3a91\",\"kind\":\"exec\",\"agentId\":\"main\",\"sessionKey\":\"sess-7f3a91\",\"createdAtMs\":1732000000000,\"expiresAtMs\":1732600000000,\"summary\":\"echo L8E_MARKER_7f3a91\"}]}\n",
+  "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
+  "exitCode": 130,
+  "exitSignal": null,
+  "sigintToExitMs": 775,
+  "lateResponseSent": true,
+  "lateResponsePrinted": true,
+  "watchdog": false,
+  "earlyExitBeforeSigint": false,
+  "targetRequestSeen": true,
+  "targetRequestMethod": "exec.approval.list",
+  "connectFrame": {
+    "event": "connect",
+    "id": "1:5e106765-63fd-465e-b426-ad7a4e5af08a",
+    "minProtocol": 4,
+    "maxProtocol": 4,
+    "client": {
+      "id": "cli",
+      "version": "2026.11.3",
+      "platform": "linux",
+      "deviceFamily": "Linux",
+      "mode": "cli",
+      "instanceId": "040c6563-1a07-40bd-8991-36b751bad542"
+    },
+    "role": "operator",
+    "scopes": [
+      "operator.admin"
+    ],
+    "hasAuthToken": true
+  },
+  "peerEvents": [
+    {
+      "event": "listening",
+      "port": 18826
+    },
+    {
+      "event": "connect",
+      "id": "1:58d27df6-331f-4358-b4dc-c0280b8113cd",
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "58417e0b-9b34-424f-8228-6b4a8111e1b5"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ],
+      "hasAuthToken": true
+    },
+    {
+      "event": "connect",
+      "id": "1:a3186d43-c0fd-44ae-be80-e25f5ca1977f",
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "031fc91e-7324-4e80-a337-08eeda525dc5"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ],
+      "hasAuthToken": true
+    },
+    {
+      "event": "connect",
+      "id": "1:5e106765-63fd-465e-b426-ad7a4e5af08a",
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "040c6563-1a07-40bd-8991-36b751bad542"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ],
+      "hasAuthToken": true
+    },
+    {
+      "event": "req",
+      "method": "plugin.approval.list",
+      "id": "2:63f2fc28-4316-4d90-a31c-460042e0c677",
+      "params": {}
+    },
+    {
+      "event": "auto-answered",
+      "method": "plugin.approval.list",
+      "id": "2:63f2fc28-4316-4d90-a31c-460042e0c677"
+    },
+    {
+      "event": "req",
+      "method": "exec.approval.list",
+      "id": "2:49698593-efea-430b-81da-c99a35f2bc15",
+      "params": {}
+    },
+    {
+      "event": "held",
+      "method": "exec.approval.list",
+      "id": "2:49698593-efea-430b-81da-c99a35f2bc15"
+    },
+    {
+      "event": "req",
+      "method": "openclaw.approval.list",
+      "id": "2:85bf4aab-601a-4c5d-b0e9-b7249dfd66bc",
+      "params": {}
+    },
+    {
+      "event": "auto-answered",
+      "method": "openclaw.approval.list",
+      "id": "2:85bf4aab-601a-4c5d-b0e9-b7249dfd66bc"
+    },
+    {
+      "event": "released",
+      "method": "exec.approval.list",
+      "id": "2:49698593-efea-430b-81da-c99a35f2bc15",
+      "socketOpen": true
+    }
+  ],
+  "lateResponseSentAt": "2026-11-14T10:33:04.772Z",
+  "stderrTail": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
+  "peerStderr": "",
+  "finishedAt": "2026-11-14T10:33:05.246Z",
+  "peerPort": 18826
+}

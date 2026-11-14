@@ -1,0 +1,154 @@
+{
+  "harness": "ws-peer-harness/drive.mjs",
+  "startedAt": "2026-11-14T10:33:06.313Z",
+  "tree": "/ws",
+  "method": "exec.approval.list",
+  "cliArgs": [
+    "approvals",
+    "pending",
+    "--url",
+    "ws://127.0.0.1:18827",
+    "--token",
+    "test-token",
+    "--timeout",
+    "14000",
+    "--json"
+  ],
+  "isolatedEnv": {
+    "OPENCLAW_STATE_DIR": "/tmp/wspeer-xqQgEV/state",
+    "OPENCLAW_CONFIG_PATH": "/tmp/wspeer-xqQgEV/config/openclaw.json",
+    "OPENCLAW_HOME": "/tmp/wspeer-xqQgEV/home",
+    "HOME": "/tmp/wspeer-xqQgEV/home"
+  },
+  "stdout": "",
+  "stderr": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
+  "exitCode": 130,
+  "exitSignal": null,
+  "sigintToExitMs": 460,
+  "lateResponseSent": true,
+  "lateResponsePrinted": false,
+  "watchdog": false,
+  "earlyExitBeforeSigint": false,
+  "targetRequestSeen": true,
+  "targetRequestMethod": "exec.approval.list",
+  "connectFrame": {
+    "event": "connect",
+    "id": "1:e6082287-1efc-4440-b6eb-1f7bddbd13fb",
+    "minProtocol": 4,
+    "maxProtocol": 4,
+    "client": {
+      "id": "cli",
+      "version": "2026.11.3",
+      "platform": "linux",
+      "deviceFamily": "Linux",
+      "mode": "cli",
+      "instanceId": "a09df2bc-a6e1-4c6d-9a8c-2466d6ae5822"
+    },
+    "role": "operator",
+    "scopes": [
+      "operator.admin"
+    ],
+    "hasAuthToken": true
+  },
+  "peerEvents": [
+    {
+      "event": "listening",
+      "port": 18827
+    },
+    {
+      "event": "connect",
+      "id": "1:ef9843e5-89de-4f44-aca3-989491a0bfe1",
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "96b7a73d-8228-4ba3-b7f8-3f723d33c0df"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ],
+      "hasAuthToken": true
+    },
+    {
+      "event": "connect",
+      "id": "1:53a17ddd-8908-4ad4-8dbc-161ff729f9a3",
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "a9b9dc97-eb1f-4dd8-9503-215b57a03b6a"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ],
+      "hasAuthToken": true
+    },
+    {
+      "event": "connect",
+      "id": "1:e6082287-1efc-4440-b6eb-1f7bddbd13fb",
+      "minProtocol": 4,
+      "maxProtocol": 4,
+      "client": {
+        "id": "cli",
+        "version": "2026.11.3",
+        "platform": "linux",
+        "deviceFamily": "Linux",
+        "mode": "cli",
+        "instanceId": "a09df2bc-a6e1-4c6d-9a8c-2466d6ae5822"
+      },
+      "role": "operator",
+      "scopes": [
+        "operator.admin"
+      ],
+      "hasAuthToken": true
+    },
+    {
+      "event": "req",
+      "method": "openclaw.approval.list",
+      "id": "2:8283e131-0f16-4885-bf83-a29092a0f434",
+      "params": {}
+    },
+    {
+      "event": "auto-answered",
+      "method": "openclaw.approval.list",
+      "id": "2:8283e131-0f16-4885-bf83-a29092a0f434"
+    },
+    {
+      "event": "req",
+      "method": "plugin.approval.list",
+      "id": "2:7418f037-a399-4b76-8797-c9452d1c964c",
+      "params": {}
+    },
+    {
+      "event": "auto-answered",
+      "method": "plugin.approval.list",
+      "id": "2:7418f037-a399-4b76-8797-c9452d1c964c"
+    },
+    {
+      "event": "req",
+      "method": "exec.approval.list",
+      "id": "2:2b2102ec-4649-481f-bc6c-c88715c51d23",
+      "params": {}
+    },
+    {
+      "event": "held",
+      "method": "exec.approval.list",
+      "id": "2:2b2102ec-4649-481f-bc6c-c88715c51d23"
+    }
+  ],
+  "lateResponseSentAt": "2026-11-14T10:33:21.777Z",
+  "stderrTail": "Command interrupted by SIGINT. Waiting for cleanup before exiting.\n",
+  "peerStderr": "",
+  "finishedAt": "2026-11-14T10:33:21.936Z",
+  "peerPort": 18827
+}
