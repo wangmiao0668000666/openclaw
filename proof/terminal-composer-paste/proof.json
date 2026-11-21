@@ -1,0 +1,18 @@
+{
+  "gateway": "real dist Gateway on 127.0.0.1:19744",
+  "pty": "real terminal PTY opened through the Gateway",
+  "clipboard": "real OS clipboard via navigator.clipboard + real Control+V",
+  "modelProvider": "loopback fixture only",
+  "textPasteUploads": 0,
+  "imageUpload": {
+    "ok": true,
+    "path": "/tmp/openclaw-terminal-upload-cXZdSk/image.png",
+    "size": 92
+  },
+  "stagedOnDisk": {
+    "size": 92,
+    "isFile": true
+  },
+  "attachmentChip": "image.png",
+  "composerValueAfterStaging": "plain text paste"
+}
