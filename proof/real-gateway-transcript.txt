@@ -1,0 +1,33 @@
+Real-Gateway proof for PR #202697 (fix/terminal-composer-paste-image), head 73c40fc3ce2
+Date: 2026-11-21
+Setup: real OpenClaw Gateway 2026.11.5 running in Debian container (glibc 2.36,
+glibc 2.28). Control UI bundle (dist/control-ui) built remotely from this PR's exact
+sources; dist/build-info.json aligned to the UI build id. Gateway config carries a
+fake local provider so the first-run wizard is skipped; token auth testtoken123.
+Local Playwright Chromium drives the UI through an SSH tunnel (127.0.0.1:39711 ->
+container :39712). Real OS clipboard via navigator.clipboard + real Control+V.
+
+Observed output (proof-202697.mjs):
+  control UI loaded at http://127.0.0.1:39711/chat/main
+  terminal panel attached
+  composer visible
+  text paste -> composer value contains "plain text paste": true
+  terminal.upload after text paste: 0
+  real staged file: /tmp/openclaw-terminal-upload-x2Hfa3/image.png (92 bytes)
+  attachment chip text: "image.png"
+  RPCs during image paste: ["terminal.upload","terminal.resize"]
+  terminal.upload sent: true
+  terminal.input sent before Send: false
+  staged bytes: 92, PNG magic: 89504e47
+  sha256: 7e1ba6610301e0f66bfa58de6ed63008148afba6eb619aef2a678fb44fbc8a49
+  screenshot: /tmp/proof-202697/composer-pasted-image.png
+
+Meaning:
+- The paste reached the real terminal.upload gateway method (not a mock): the
+  browser sent terminal.upload over the real WebSocket and the real
+  stageTerminalUpload wrote a real file under the container's tmpdir().
+- The staged file on disk starts with the PNG magic 89504e47 and is byte-identical
+  in size to the upload (92 bytes) - actual staging, not a test-supplied path.
+- Text paste stayed native: zero terminal.upload RPCs, text landed in the input.
+- Staging is not submission: no terminal.input was sent before an explicit Send.
+- The .tp-attachment chip rendered in the shipped composer.
