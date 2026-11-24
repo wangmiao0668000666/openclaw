@@ -1,0 +1,25 @@
+{
+  "what": "Control UI completion wake delivers its reply under visibleReplies=message_tool",
+  "gateway": "real isolated Gateway from dist build",
+  "provider": "scripted loopback OpenAI Responses transport (not external-provider live proof)",
+  "browser": "real Chromium via Playwright",
+  "complete": true,
+  "gatewayPort": 43969,
+  "gatewayRpcReady": true,
+  "controlUiReady": true,
+  "sessionPath": "/chat/main/dashboard/completion-reply-proof",
+  "stage": "complete",
+  "childStarted": true,
+  "visibleReplyMessages": 1,
+  "replyInTranscript": true,
+  "transcriptReplyDelivered": true,
+  "messageToolCalls": [],
+  "refused": false,
+  "messageToolInvoked": true,
+  "messageToolArgs": [
+    {
+      "action": "send",
+      "message": "The review finished successfully. No issues found in the release notes."
+    }
+  ]
+}
