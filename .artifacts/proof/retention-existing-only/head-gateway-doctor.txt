@@ -1,0 +1,37 @@
+[proof:head] stateDir=/tmp/oc-ret-proof-head-qwfBzt
+[proof:head] cli=/retention-head/openclaw.mjs
+[proof:head] before gateway: missing store absent=true
+[proof:head] before gateway: expired row present=true
+[proof:head] before gateway: registry={"agents":["main","stale"],"found":true}
+[proof:head] gateway pid=23080 port=19179; waiting 160s for the shipped retention timer...
+[proof:head] after gateway retention cycle:
+[proof:head]   expired row pruned=true
+[proof:head]   fresh row preserved=true
+[proof:head]   removed store recreated=false (false = stays absent)
+[proof:head]   registry row survives=true
+[proof:head] gateway shutdown; retention log lines:
+  [gateway] startup phase: cli.command.config-ready starting total=3583.3ms
+  [gateway] startup phase: cli.command.config-ready 10288.6ms total=13871.9ms start=3583.3ms rssMb=583.2 heapUsedMb=190.3 workers=5 workerHeapSamples=5/5 workerHeapMb=187.3 workerHeapSource=cached
+  2026-11-26T17:14:26.703+00:00 [gateway] spawn broker ready pid=23123
+  2026-11-26T17:14:35.501+00:00 [gateway] http server listening (18 plugins: acpx, anthropic, browser, canvas, cua-computer, deep-research, device-pair, file-transfer, geolocation, github, linux-node, llama-cpp, memory-core, ollama, openai, skill-workshop, talk-voice, xai; 9.4s)
+  2026-11-26T17:14:35.548+00:00 [gateway] startup phase: sidecars.worker-environments.github-ready starting total=24314.4ms
+  2026-11-26T17:14:35.549+00:00 [gateway] startup phase: sidecars.worker-environments.github-ready 0.6ms total=24315.0ms rssMb=981.2 heapUsedMb=203.3 workers=11 workerHeapSamples=9/11 workerHeapMb=343.4 workerHeapSource=cached
+  2026-11-26T17:14:36.772+00:00 [state/agent-admission] agent database reads ready while writable inspection continues
+  2026-11-26T17:14:51.028+00:00 [event-loop] main-thread stall: elapsedMs=564 task="post-ready.gateway-data.plugins" taskMs=564 stallStartMs=1795713290257 stallEndMs=1795713290820 reportedAtMs=1795713291028
+[proof:head] running real doctor CLI (openclaw doctor --non-interactive)...
+[proof:head] doctor exit=0
+[proof:head] after doctor:
+[proof:head]   removed store recreated=false (false = stays absent)
+[proof:head]   registry row survives=true
+  doctor| │  - Skipped missing registered agent database                                │
+  doctor| │    <state>/agents/stale/agent/openclaw-agent.sqlite.  │
+  doctor| │  unmanifested/orphan                                                     │
+  doctor| │  0 unmanifested/orphan                                                   │
+  doctor| │  0 unmanifested/orphan                                                   │
+  doctor| │  protected, 0 unmanifested/orphan                                        │
+  doctor| │  Prepared the agent roster for persistence.  │
+  doctor| │  Run "openclaw doctor --fix" to persist the explicit agent roster.  │
+  doctor| ◇  Database engines ───────────────────────────────────────────────────────────────────╮
+  doctor| │  Shared state: default=sqlite, override=inherit, effective=sqlite                    │
+[proof:head] gatewayOk=true doctorOk=true
+[proof:head] PASS

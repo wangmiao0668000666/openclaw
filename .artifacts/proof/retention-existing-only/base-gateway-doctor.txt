@@ -1,0 +1,37 @@
+[proof:base] stateDir=/tmp/oc-ret-proof-base-J4e8tN
+[proof:base] cli=/retention-base/openclaw.mjs
+[proof:base] before gateway: missing store absent=true
+[proof:base] before gateway: expired row present=true
+[proof:base] before gateway: registry={"agents":["main","stale"],"found":true}
+[proof:base] gateway pid=23674 port=19236; waiting 160s for the shipped retention timer...
+[proof:base] after gateway retention cycle:
+[proof:base]   expired row pruned=true
+[proof:base]   fresh row preserved=true
+[proof:base]   removed store recreated=true (false = stays absent)
+[proof:base]   registry row survives=true
+[proof:base] gateway shutdown; retention log lines:
+  [gateway] startup phase: cli.command.config-ready starting total=1834.8ms
+  [gateway] startup phase: cli.command.config-ready 6454.4ms total=8289.1ms start=1834.8ms rssMb=596.6 heapUsedMb=189.7 workers=5 workerHeapSamples=5/5 workerHeapMb=188.1 workerHeapSource=cached
+  2026-11-26T17:19:04.722+00:00 [gateway] spawn broker ready pid=23717
+  2026-11-26T17:19:10.499+00:00 [gateway] http server listening (18 plugins: acpx, anthropic, browser, canvas, cua-computer, deep-research, device-pair, file-transfer, geolocation, github, linux-node, llama-cpp, memory-core, ollama, openai, skill-workshop, talk-voice, xai; 6.3s)
+  2026-11-26T17:19:10.522+00:00 [gateway] startup phase: sidecars.worker-environments.github-ready starting total=15295.3ms
+  2026-11-26T17:19:10.523+00:00 [gateway] startup phase: sidecars.worker-environments.github-ready 0.4ms total=15295.7ms rssMb=975.6 heapUsedMb=217.6 workers=11 workerHeapSamples=9/11 workerHeapMb=345.9 workerHeapSource=cached
+  2026-11-26T17:19:11.393+00:00 [state/agent-admission] agent database reads ready while writable inspection continues
+  2026-11-26T17:19:25.195+00:00 [event-loop] main-thread stall: elapsedMs=278 task="post-ready.gateway-data.plugins" taskMs=278 stallStartMs=1795713564341 stallEndMs=1795713564619 reportedAtMs=1795713565194
+[proof:base] running real doctor CLI (openclaw doctor --non-interactive)...
+[proof:base] doctor exit=0
+[proof:base] after doctor:
+[proof:base]   removed store recreated=true (false = stays absent)
+[proof:base]   registry row survives=true
+  doctor| │  unmanifested/orphan                                                     │
+  doctor| │  0 unmanifested/orphan                                                   │
+  doctor| │  0 unmanifested/orphan                                                   │
+  doctor| │  protected, 0 unmanifested/orphan                                        │
+  doctor| │  Prepared the agent roster for persistence.  │
+  doctor| │  Run "openclaw doctor --fix" to persist the explicit agent roster.  │
+  doctor| ◇  Database engines ───────────────────────────────────────────────────────────────────╮
+  doctor| │  Shared state: default=sqlite, override=inherit, effective=sqlite                    │
+  doctor| │  (configured); observed=sqlite                                                       │
+  doctor| │  Agent data: default=sqlite, override=inherit, effective=sqlite                      │
+[proof:base] gatewayOk=false doctorOk=false
+[proof:base] FAIL
