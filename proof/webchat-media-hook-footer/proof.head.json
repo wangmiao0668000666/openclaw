@@ -1,0 +1,86 @@
+{
+  "what": "before_message_write footer survives the media display rewrite in chat.history",
+  "expectMode": "head",
+  "gateway": "real isolated Gateway from dist build",
+  "provider": "scripted loopback OpenAI Responses transport (not external-provider live proof)",
+  "hook": "real on-disk plugin registering a real before_message_write handler",
+  "browser": "real Chromium via Playwright",
+  "complete": true,
+  "gatewayPort": 42147,
+  "gatewayRpcReady": true,
+  "controlUiReady": true,
+  "stage": "complete",
+  "media": {
+    "footerCount": 1,
+    "captionCount": 1,
+    "imageBlocks": 1,
+    "usedDisplayContent": false,
+    "displayTexts": [
+      "Caption text.",
+      "FOOTER_FROM_HOOK"
+    ],
+    "rawRowCount": 2,
+    "perRow": [
+      {
+        "images": 0,
+        "texts": [],
+        "usedDisplayContent": false,
+        "footer": 0,
+        "caption": 0
+      },
+      {
+        "images": 1,
+        "texts": [
+          "Caption text.",
+          "FOOTER_FROM_HOOK"
+        ],
+        "usedDisplayContent": false,
+        "footer": 1,
+        "caption": 1
+      }
+    ]
+  },
+  "mediaAfterReload": {
+    "footerCount": 1,
+    "captionCount": 1,
+    "imageBlocks": 1,
+    "usedDisplayContent": false,
+    "displayTexts": [
+      "Caption text.",
+      "FOOTER_FROM_HOOK"
+    ],
+    "rawRowCount": 2,
+    "perRow": [
+      {
+        "images": 0,
+        "texts": [],
+        "usedDisplayContent": false,
+        "footer": 0,
+        "caption": 0
+      },
+      {
+        "images": 1,
+        "texts": [
+          "Caption text.",
+          "FOOTER_FROM_HOOK"
+        ],
+        "usedDisplayContent": false,
+        "footer": 1,
+        "caption": 1
+      }
+    ]
+  },
+  "textControl": {
+    "found": true,
+    "footerCount": 0,
+    "texts": [
+      "Plain text answer with no media."
+    ]
+  },
+  "providerCounts": {
+    "mediaTurnRequests": 2,
+    "textTurnRequests": 1,
+    "mediaFinalSent": true
+  },
+  "problems": []
+}
