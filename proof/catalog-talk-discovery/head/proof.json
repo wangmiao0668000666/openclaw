@@ -1,0 +1,65 @@
+{
+  "what": "Catalog route key must not reach Talk discovery; adoption resumes it with the real chat key",
+  "issue": "openclaw/openclaw#206800",
+  "gateway": "real isolated Gateway from dist build",
+  "catalog": "real bundled Anthropic plugin discovering a synthetic local Claude Code transcript",
+  "browser": "real Chromium via Playwright, built Control UI (dist/control-ui)",
+  "complete": true,
+  "gatewayPort": 38823,
+  "gatewayRpcReady": true,
+  "catalogListed": true,
+  "controlUiReady": true,
+  "stage": "complete",
+  "catalogRouteKey": "agent:main:catalog:claude:gateway%3Alocal:11111111-2222-3333-4444-555555555555",
+  "talkRequests": {
+    "all": [
+      {
+        "method": "talk.catalog",
+        "sessionKey": "agent:main:main"
+      },
+      {
+        "method": "talk.config"
+      },
+      {
+        "method": "talk.catalog",
+        "sessionKey": "agent:main:main"
+      },
+      {
+        "method": "talk.config"
+      },
+      {
+        "method": "talk.catalog",
+        "sessionKey": "agent:main:main:plugin:anthropic:catalog-adopt:claude:666ff6ccaa5b3c07feaa3a95d3a4bd2c46ac9e9abdb09ca9133528d3dc1e8952"
+      },
+      {
+        "method": "talk.config"
+      }
+    ],
+    "onOpenCatalogKeyed": [],
+    "onReopenCatalogKeyed": [],
+    "onFocusCatalogKeyed": []
+  },
+  "catalogKeyReachedTalk": false,
+  "adoptedSessionKey": "agent:main:plugin:anthropic:catalog-adopt:claude:666ff6ccaa5b3c07feaa3a95d3a4bd2c46ac9e9abdb09ca9133528d3dc1e8952",
+  "adoption": {
+    "adoptedKey": "agent:main:plugin:anthropic:catalog-adopt:claude:666ff6ccaa5b3c07feaa3a95d3a4bd2c46ac9e9abdb09ca9133528d3dc1e8952",
+    "adoptedPath": "/chat/main/main/plugin/anthropic/catalog-adopt/claude/666ff6ccaa5b3c07feaa3a95d3a4bd2c46ac9e9abdb09ca9133528d3dc1e8952",
+    "talkAfterAdoption": [
+      {
+        "method": "talk.catalog",
+        "sessionKey": "agent:main:main:plugin:anthropic:catalog-adopt:claude:666ff6ccaa5b3c07feaa3a95d3a4bd2c46ac9e9abdb09ca9133528d3dc1e8952"
+      },
+      {
+        "method": "talk.config"
+      }
+    ],
+    "nonCatalogTalkAfterAdoption": [
+      {
+        "method": "talk.catalog",
+        "sessionKey": "agent:main:main:plugin:anthropic:catalog-adopt:claude:666ff6ccaa5b3c07feaa3a95d3a4bd2c46ac9e9abdb09ca9133528d3dc1e8952"
+      }
+    ],
+    "catalogKeyedAfterAdoption": []
+  },
+  "discoveryResumedAfterAdoption": true
+}

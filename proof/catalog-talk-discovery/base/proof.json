@@ -1,0 +1,60 @@
+{
+  "what": "Catalog route key must not reach Talk discovery; adoption resumes it with the real chat key",
+  "issue": "openclaw/openclaw#206800",
+  "gateway": "real isolated Gateway from dist build",
+  "catalog": "real bundled Anthropic plugin discovering a synthetic local Claude Code transcript",
+  "browser": "real Chromium via Playwright, built Control UI (dist/control-ui)",
+  "complete": false,
+  "gatewayPort": 33477,
+  "gatewayRpcReady": true,
+  "catalogListed": true,
+  "controlUiReady": true,
+  "stage": "focus refresh",
+  "catalogRouteKey": "agent:main:catalog:claude:gateway%3Alocal:11111111-2222-3333-4444-555555555555",
+  "talkRequests": {
+    "all": [
+      {
+        "method": "talk.catalog",
+        "sessionKey": "agent:main:catalog:claude:gateway%3Alocal:11111111-2222-3333-4444-555555555555"
+      },
+      {
+        "method": "talk.config"
+      },
+      {
+        "method": "talk.catalog",
+        "sessionKey": "agent:main:main"
+      },
+      {
+        "method": "talk.config"
+      },
+      {
+        "method": "talk.catalog",
+        "sessionKey": "agent:main:catalog:claude:gateway%3Alocal:11111111-2222-3333-4444-555555555555"
+      },
+      {
+        "method": "talk.config"
+      },
+      {
+        "method": "talk.catalog",
+        "sessionKey": "agent:main:main"
+      },
+      {
+        "method": "talk.config"
+      }
+    ],
+    "onOpenCatalogKeyed": [
+      {
+        "method": "talk.catalog",
+        "sessionKey": "agent:main:catalog:claude:gateway%3Alocal:11111111-2222-3333-4444-555555555555"
+      }
+    ],
+    "onReopenCatalogKeyed": [],
+    "onFocusCatalogKeyed": [
+      {
+        "method": "talk.catalog",
+        "sessionKey": "agent:main:catalog:claude:gateway%3Alocal:11111111-2222-3333-4444-555555555555"
+      }
+    ]
+  },
+  "catalogKeyReachedTalk": true
+}

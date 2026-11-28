@@ -1,0 +1,48 @@
+{
+  "catalogs": [
+    {
+      "id": "claude",
+      "label": "Claude Code",
+      "capabilities": {
+        "continueSession": true,
+        "archive": false,
+        "openTerminal": true,
+        "startTerminal": true
+      },
+      "hosts": [
+        {
+          "hostId": "gateway:local",
+          "label": "Local Claude",
+          "kind": "gateway",
+          "connected": true,
+          "canStartTerminal": true,
+          "sessions": [
+            {
+              "threadId": "11111111-2222-3333-4444-555555555555",
+              "cwd": "[state-root]/workspace",
+              "status": "stored",
+              "createdAt": 1795824000000,
+              "updatedAt": 1795871345898.076,
+              "source": "claude-cli",
+              "modelProvider": "anthropic",
+              "cliVersion": "1.0.0",
+              "gitBranch": "main",
+              "archived": false,
+              "sourceHomeId": "b7189e29c492bbfa884292130d36a09f9a597a07298dfcaf2d7536d4a941284a",
+              "exportPolicy": {
+                "origin": "native-local",
+                "automatic": true,
+                "stableHostThreadIdentity": true
+              },
+              "name": "Synthetic catalog talk-discovery proof session",
+              "recencyAt": 1795871345898.076,
+              "canContinue": true,
+              "canArchive": false,
+              "canOpenTerminal": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
