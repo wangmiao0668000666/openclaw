@@ -22,20 +22,20 @@
               "cwd": "[state-root]/workspace",
               "status": "stored",
               "createdAt": 1795824000000,
-              "updatedAt": 1795871065756.6443,
+              "updatedAt": 1795872192226.1143,
               "source": "claude-cli",
               "modelProvider": "anthropic",
               "cliVersion": "1.0.0",
               "gitBranch": "main",
               "archived": false,
-              "sourceHomeId": "16b70b52675b4c0f0ba56914bb8e70f356abf059266d3ace7dd7d273615e1712",
+              "sourceHomeId": "ebe4ce35735c09fd0a0b016d5cefbef60519d858165706ca74e920b5c24fc2e4",
               "exportPolicy": {
                 "origin": "native-local",
                 "automatic": true,
                 "stableHostThreadIdentity": true
               },
               "name": "Synthetic catalog talk-discovery proof session",
-              "recencyAt": 1795871065756.6443,
+              "recencyAt": 1795872192226.1143,
               "canContinue": true,
               "canArchive": false,
               "canOpenTerminal": true

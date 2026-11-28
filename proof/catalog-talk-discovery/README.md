@@ -32,20 +32,23 @@ hook. Tokens, state-root and home paths are redacted.
 | Run  | Build                                  | catalog-keyed `talk.catalog` (open / reopen / focus) | Adoption |
 |------|----------------------------------------|------------------------------------------------------|----------|
 | BASE | `5c44c9cc4d9~1` picker (fix reverted)  | **1 / 1 / 0 → bug reproduces**                        | n/a      |
-| HEAD | `cf79f328ff3` (fix)                    | **0 / 0 / 0**                                         | discovery resumes with a non-catalog key |
+| HEAD | `cf79f328ff3` (fix)                    | **0 / 0 / 0**                                         | discovery resumes with the exact adopted key |
 
 - **BASE (`base/proof.json`):** opening the catalog route sends
   `talk.catalog { sessionKey: "agent:main:catalog:claude:gateway%3Alocal:11111111-…" }`,
   and reopening sends it again — the catalog key reaches Talk discovery twice.
 - **HEAD (`head/proof.json`):** zero `:catalog:` talk requests across open,
-  reopen, and a focus refresh. After a real `sessions.catalog.continue`
-  adoption returns a real chat key and the pane navigates to it, discovery
-  resumes scoped to that non-catalog key
-  (`agent:main:main:plugin:anthropic:catalog-adopt:claude:…`).
+  reopen, and a focus refresh. A real `sessions.catalog.continue` adoption
+  returns the chat key
+  `agent:main:plugin:anthropic:catalog-adopt:claude:666ff6cc…`; navigating to
+  that key's route (`/chat/main/plugin/anthropic/catalog-adopt/claude/666ff6cc…`)
+  resumes discovery with a `talk.catalog` whose `sessionKey` **exactly equals**
+  the key adoption returned, and the adopted session's `chat.history` retains the
+  imported Claude transcript (`head/adopted-history.json`).
 
 The only session keys HEAD ever sends to Talk are ordinary, non-catalog keys
-(`agent:main:main` and the adopted chat key); the catalog route key is never
-sent.
+(`agent:main:main` and the exact adopted chat key); the catalog route key is
+never sent.
 
 ## Files
 
@@ -55,6 +58,8 @@ sent.
   Control UI at the asserted states.
 - `head/catalog-list.json`, `base/catalog-list.json` — the real Anthropic catalog
   listing the synthetic Claude session (proves the catalog provider is live).
+- `head/adopted-history.json` — the adopted session's `chat.history`, retaining
+  the imported Claude transcript.
 - `head/gateway.private.log` — redacted Gateway log.
 
 ## Reproduce

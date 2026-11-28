@@ -464,11 +464,14 @@ async function main() {
   log("adoption returned real chat key:", adoptedKey);
 
   // Adoption created an ordinary Gateway session (the CLI returned its key). The
-  // Control UI addresses that session by its exact key: /chat/<agent>/<rest
-  // segments>. Navigating there must resume discovery scoped to that real,
-  // non-catalog session key. Assert on the session-key shape the wire carries.
-  const adoptedSegments = adoptedKey.split(":").slice(1).map(encodeURIComponent).join("/");
-  const adoptedPath = `/chat/${AGENT_ID}/${adoptedSegments}`;
+  // Control UI addresses that session by its exact key. Its route is the agent
+  // route plus the key's rest segments (everything after "agent:<agentId>:"):
+  // /chat/<agentId>/<rest...>. Navigating there must resume discovery scoped to
+  // exactly the key sessions.catalog.continue returned.
+  const rest = adoptedKey.startsWith(`agent:${AGENT_ID}:`)
+    ? adoptedKey.slice(`agent:${AGENT_ID}:`.length)
+    : adoptedKey.split(":").slice(2).join(":");
+  const adoptedPath = `/chat/${AGENT_ID}/${rest.split(":").map(encodeURIComponent).join("/")}`;
   mark = talkFrames.length;
   await page.evaluate(
     ({ p }) => window.openclawControlUi.navigate("chat", { pathname: p, search: "?lang=en" }),
@@ -477,20 +480,16 @@ async function main() {
   await page.waitForTimeout(2500);
   const adoptedWindow = talkSince(mark);
   const adoptedCatalogLeak = catalogKeyed(adoptedWindow);
-  // Discovery resumed = a talk.catalog scoped to a real, non-catalog session key
-  // (the adopted key the Control UI canonicalizes for the adopted session).
-  const resumedTalk = adoptedWindow.filter(
-    (entry) =>
-      entry.method === "talk.catalog" &&
-      typeof entry.sessionKey === "string" &&
-      entry.sessionKey.length > 0 &&
-      !entry.sessionKey.includes(":catalog:"),
+  // Discovery resumed = a talk.catalog scoped to exactly the key adoption
+  // returned (not merely any non-catalog key).
+  const exactKeyTalk = adoptedWindow.filter(
+    (entry) => entry.method === "talk.catalog" && entry.sessionKey === adoptedKey,
   );
   proof.adoption = {
     adoptedKey,
     adoptedPath,
     talkAfterAdoption: adoptedWindow,
-    nonCatalogTalkAfterAdoption: resumedTalk,
+    exactKeyTalkRequests: exactKeyTalk,
     catalogKeyedAfterAdoption: adoptedCatalogLeak,
   };
   await page.screenshot({ path: path.join(outDir, "adopted-route.png"), fullPage: false });
@@ -498,13 +497,37 @@ async function main() {
   if (adoptedCatalogLeak.length > 0) {
     fail(`catalog key still reached Talk after adoption: ${JSON.stringify(adoptedCatalogLeak)}`);
   }
-  proof.discoveryResumedAfterAdoption = resumedTalk.length > 0;
+  proof.discoveryResumedAfterAdoption = exactKeyTalk.length > 0;
   log(
-    `after adoption: ${resumedTalk.length} non-catalog talk.catalog request(s), zero catalog-keyed`,
+    `after adoption: ${exactKeyTalk.length} talk.catalog request(s) scoped to the exact adopted key, zero catalog-keyed`,
   );
   if (!proof.discoveryResumedAfterAdoption) {
-    fail("discovery did not resume with a real chat key after adoption");
+    fail(
+      `discovery did not resume with the exact adopted key ${adoptedKey}; wire carried: ${JSON.stringify(
+        adoptedWindow.map((e) => e.sessionKey),
+      )}`,
+    );
   }
+
+  // The adopted transcript must be visibly retained: the Control UI shows the
+  // imported Claude history for the adopted session.
+  const history = await cli([
+    "gateway",
+    "call",
+    "chat.history",
+    "--params",
+    JSON.stringify({ sessionKey: adoptedKey, limit: 50 }),
+  ]);
+  await fs.writeFile(
+    path.join(outDir, "adopted-history.json"),
+    `${redact(JSON.stringify(history, null, 2))}\n`,
+  );
+  const historyText = JSON.stringify(history);
+  proof.adoptedTranscriptRetained = historyText.includes("Synthetic catalog talk-discovery proof");
+  if (!proof.adoptedTranscriptRetained) {
+    fail("the adopted session did not retain the imported Claude transcript");
+  }
+  log("adopted transcript retained in chat.history");
 
   await fs.writeFile(path.join(outDir, "gateway.private.log"), redact(readGateway()));
   proof.complete = true;

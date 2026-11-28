@@ -1,0 +1,156 @@
+{
+  "sessionKey": "agent:main:plugin:anthropic:catalog-adopt:claude:666ff6ccaa5b3c07feaa3a95d3a4bd2c46ac9e9abdb09ca9133528d3dc1e8952",
+  "sessionId": "7a1fc874-a854-403e-a6d2-a0cfa9f40669",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Synthetic catalog talk-discovery proof session",
+      "timestamp": 1795824000000,
+      "__openclaw": {
+        "mirrorOrigin": "claude-catalog-import",
+        "id": "a764a1df-9b7f-498a-a2d4-cdd77b50a934",
+        "idempotencyKey": "claude-catalog:11111111-2222-3333-4444-555555555555:0",
+        "recordTimestampMs": 1795872236855,
+        "transcriptPosition": {
+          "source": "92RhY9YZnOpnUFwwrAELujNpM0zQHrjihltVKaPzaTI",
+          "rawSeq": 1
+        },
+        "seq": 1,
+        "importedFrom": "claude-cli",
+        "cliSessionId": "11111111-2222-3333-4444-555555555555"
+      },
+      "idempotencyKey": "claude-catalog:11111111-2222-3333-4444-555555555555:0"
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "Acknowledged."
+        }
+      ],
+      "timestamp": 1795824005000,
+      "api": "anthropic-messages",
+      "provider": "claude-cli",
+      "model": "native-history",
+      "usage": {
+        "input": 0,
+        "output": 0,
+        "totalTokens": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0
+        }
+      },
+      "stopReason": "stop",
+      "idempotencyKey": "claude-catalog:11111111-2222-3333-4444-555555555555:1",
+      "__openclaw": {
+        "id": "77542f9a-3c3b-4e32-97a3-ad223e30fcad",
+        "idempotencyKey": "claude-catalog:11111111-2222-3333-4444-555555555555:1",
+        "recordTimestampMs": 1795872236914,
+        "transcriptPosition": {
+          "source": "92RhY9YZnOpnUFwwrAELujNpM0zQHrjihltVKaPzaTI",
+          "rawSeq": 2
+        },
+        "seq": 2,
+        "importedFrom": "claude-cli",
+        "cliSessionId": "11111111-2222-3333-4444-555555555555"
+      }
+    }
+  ],
+  "hasMore": false,
+  "totalMessages": 2,
+  "pendingInputs": {
+    "items": [],
+    "total": 0,
+    "queuedCount": 0
+  },
+  "defaults": {
+    "modelProvider": null,
+    "model": null,
+    "contextTokens": null,
+    "communication": {
+      "send": "always",
+      "receive": "always"
+    },
+    "modelSelectionTarget": "session"
+  },
+  "sessionInfo": {
+    "key": "agent:main:plugin:anthropic:catalog-adopt:claude:666ff6ccaa5b3c07feaa3a95d3a4bd2c46ac9e9abdb09ca9133528d3dc1e8952",
+    "sessionModelRevision": "yEj7gRqOtALdkwkTvU2g3y-jYeva-P0nYsaEj_TZ2YA",
+    "visibility": "shared",
+    "spawnedCwd": "[state-root]/workspace",
+    "workspaceDir": "[state-root]/workspace",
+    "effectiveCommunication": {
+      "send": "always",
+      "receive": "always"
+    },
+    "permissionModePending": false,
+    "spawnDepth": 0,
+    "createdVia": "plugin",
+    "createdActor": {
+      "type": "system",
+      "id": "anthropic",
+      "identity": {
+        "type": "legacy",
+        "actorType": "system",
+        "source": null,
+        "id": "anthropic"
+      }
+    },
+    "createdAt": 1795872236087,
+    "kind": "direct",
+    "classification": "custom",
+    "agentId": "main",
+    "isMain": false,
+    "isDock": false,
+    "isBackground": false,
+    "displayName": "Synthetic catalog talk-discovery proof session",
+    "hasMessages": true,
+    "updatedAt": 1795872236085,
+    "archived": false,
+    "pinned": false,
+    "sidebarRoot": false,
+    "unread": false,
+    "sessionId": "7a1fc874-a854-403e-a6d2-a0cfa9f40669",
+    "lifecycleRevision": "4cb9b7b4-da39-4ad5-a02c-2293376cc083",
+    "effectiveFastMode": false,
+    "effectiveFastModeSource": "default",
+    "fastAutoOnSeconds": 60,
+    "effectiveResponseUsage": "off",
+    "effectiveQueueMode": "steer",
+    "modelProvider": "anthropic",
+    "model": "claude-opus-5-5",
+    "modelOverrideSource": "user",
+    "modelSelectionLocked": true,
+    "runtimeSelectionLocked": true,
+    "agentRuntime": {
+      "id": "claude-cli",
+      "cloudPlacementSupported": false,
+      "devicePlacementSupported": false,
+      "source": "implicit"
+    },
+    "contextTokens": 1000000,
+    "snapshotAt": 1795872241907,
+    "totalTokensFresh": false,
+    "activitySummary": {
+      "state": "unavailable",
+      "canEnsure": true
+    },
+    "hasBoard": false,
+    "titlePending": false,
+    "childOwnerSessionKeys": [],
+    "hiddenFromInvolvingMe": false,
+    "sharingRole": "owner",
+    "sendDisabledReason": null,
+    "workspaceReadDisabledReason": null,
+    "hasActiveRun": false,
+    "activeRunIds": [],
+    "activeLeafEntryId": "77542f9a-3c3b-4e32-97a3-ad223e30fcad"
+  }
+}
